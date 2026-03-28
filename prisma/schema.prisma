@@ -1,0 +1,60 @@
+generator client {
+  provider = "prisma-client"
+  output   = "../generated/prisma"
+}
+
+datasource db {
+  provider = "postgresql"
+}
+
+model User {
+  id String @id @default(uuid())
+
+  fullName  String
+  studentId String @unique
+
+  email String @unique
+
+  institution String
+  class       Int
+
+  guardianPhone String
+
+  district String?
+
+  password String
+
+  profileImg String?
+
+  role Role @default(student)
+
+  status Status @default(active)
+
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+}
+
+model IsChapterComplete {
+  userId     String
+  chapterId  Int
+  quizLevel  QuizLevel?
+  isComplete Boolean    @default(false)
+
+  @@id([userId, chapterId])
+}
+
+enum Role {
+  student
+  admin
+}
+
+enum Status {
+  active
+  blocked
+}
+
+enum QuizLevel {
+  easy
+  medium
+  hard
+}
