@@ -10,7 +10,7 @@ const auth = (...roles: string[]) => {
   return async (req: Request & { user?: any }, res: Response, next: NextFunction) => {
     try {
       const token = req.headers.authorization;
-
+      
       if (!token) {
         throw new AppError(401, "Invalid signature");
       }
@@ -36,7 +36,7 @@ const auth = (...roles: string[]) => {
       const user = await prisma.user.findUnique({
         where: {
           email: decoded.email,
-          userStatus: Status.active,
+          status: Status.active,
         },
       });
 

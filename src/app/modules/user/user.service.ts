@@ -1,4 +1,4 @@
-import { Role } from "../../../../generated/prisma/client"
+import { Role, QuizLevel } from "../../../../generated/prisma/client"
 import bcrypt from "bcrypt";
 import { config } from "../../../config";
 import { prisma } from "../../../lib/prisma";
@@ -56,14 +56,14 @@ const createUser = async (payload: IUser) => {
     return result
 }
 
-const isChapterCompleted = async(payload: {email: string, chapterId: number}) => {
+const isChapterCompleted = async (payload: { email: string, chapterId: number }) => {
     const user = await prisma.user.findUnique({
-    where: {
-        email: payload.email
-    },
-    select: {
-        id: true
-    }
+        where: {
+            email: payload.email
+        },
+        select: {
+            id: true
+        }
     })
     if (!user) {
         throw new AppError(404, "User not found!")
@@ -76,10 +76,115 @@ const isChapterCompleted = async(payload: {email: string, chapterId: number}) =>
         }
     })
 
-    return !!chapterCompletion;
+    console.log(chapterCompletion)
 
+    return chapterCompletion?.isComplete || false;
+
+}
+
+const isChapterOneCompleted = async (payload: { email: string }) => {
+    const user = await prisma.user.findUnique({
+        where: {
+            email: payload.email
+        },
+        select: {
+            id: true
+        }
+    })
+    if (!user) {
+        throw new AppError(404, "User not found!")
+    }
+    const chapterCompletion = await prisma.isChapterComplete.findFirst({
+        where: {
+            userId: user.id,
+            chapterId: 1
+        }
+    })
+
+    return chapterCompletion?.isComplete || false;
+}
+
+const updateChapterCompletion = async (payload: { email: string, chapterId: number }) => {
+    const user = await prisma.user.findUnique({
+        where: {
+            email: payload.email
+        },
+        select: {
+            id: true
+        }
+    })
+    if (!user) {
+        throw new AppError(404, "User not found!")
+    }
+    
+    const updatedCompletion = await prisma.isChapterComplete.updateMany({
+        where: {
+            userId: user.id,
+            chapterId: payload.chapterId
+        },
+        data: {
+            isComplete: true
+        }
+    })
+    return updatedCompletion;
+}
+
+const quizLevelInfo = async (payload: { email: string, chapterId: number }) => {
+    const user = await prisma.user.findUnique({
+        where: {
+            email: payload.email
+        },
+        select: {
+            id: true
+        }
+    })
+    if (!user) {
+        throw new AppError(404, "User not found!")
+    }
+
+    const chapterCompletion = await prisma.isChapterComplete.findFirst({
+        where: {
+            userId: user.id,
+            chapterId: payload.chapterId
+        },
+        select: {
+            quizLevel: true
+        }
+    })
+
+    return chapterCompletion?.quizLevel || null;
+}
+
+const quizLevelUpdate = async (payload: { email: string, chapterId: number, quizLevel: QuizLevel }) => {
+    const user = await prisma.user.findUnique({
+        where: {
+            email: payload.email
+        },
+        select: {
+            id: true
+        }
+    })
+    if (!user) {
+        throw new AppError(404, "User not found!")
+    }
+
+    const updatedQuizLevel = await prisma.isChapterComplete.updateMany({
+        where: {
+            userId: user.id,
+            chapterId: payload.chapterId
+        },
+        data: {
+            quizLevel: payload.quizLevel
+        }
+    })
+    return updatedQuizLevel;
 }
 
 export const UserService = {
     createUser,
+    isChapterCompleted,
+    isChapterOneCompleted,
+    updateChapterCompletion,
+    quizLevelInfo,
+    quizLevelUpdate
 }
