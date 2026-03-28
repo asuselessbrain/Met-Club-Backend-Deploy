@@ -4,6 +4,9 @@ import { config } from "../../../config";
 import { prisma } from "../../../lib/prisma";
 import { IUser } from "../../../types";
 import AppError from "../../errors/appErrors";
+import { jwtGenerator } from "../../../utils/jwt";
+import { Secret } from "jsonwebtoken";
+import { StringValue } from "ms";
 
 const generateStudentId = async () => {
     const lastUser = await prisma.user.findFirst({
@@ -53,7 +56,13 @@ const createUser = async (payload: IUser) => {
         })
         return createUser;
     })
-    return result
+
+    const accessToken = await jwtGenerator({
+        userInfo: { email: result.email, role: result.role },
+        createSecretKey: config.jwt.token_secret as Secret,
+        expiresIn: config.jwt.token_expires_in as StringValue,
+    })
+    return { ...result, accessToken };
 }
 
 const isChapterCompleted = async (payload: { email: string, chapterId: number }) => {
@@ -116,7 +125,7 @@ const updateChapterCompletion = async (payload: { email: string, chapterId: numb
     if (!user) {
         throw new AppError(404, "User not found!")
     }
-    
+
     const updatedCompletion = await prisma.isChapterComplete.updateMany({
         where: {
             userId: user.id,

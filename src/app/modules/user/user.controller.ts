@@ -6,6 +6,8 @@ import { UserService } from "./user.service"
 const createUser = catchAsync(async (req: Request, res: Response) => {
     const result = await UserService.createUser(req.body)
 
+    res.cookie('token', result.accessToken, { secure: false, httpOnly: true })
+
     sendResponse(res, {
         statusCode: 201,
         message: "User created successfully!",
