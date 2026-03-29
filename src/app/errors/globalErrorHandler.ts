@@ -64,9 +64,6 @@ export const globalErrorHandler = (
     errorMessage = error.message;
   }
 
-  // Console log for debugging
-  console.log("🚨 Error Handler Caught:", error.statusCode, error.message);
-
   res.status(statusCode).json({
     success: false,
     statusCode,

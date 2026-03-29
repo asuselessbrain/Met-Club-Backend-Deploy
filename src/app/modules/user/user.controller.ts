@@ -16,7 +16,6 @@ const createUser = catchAsync(async (req: Request, res: Response) => {
 })
 
 const isChapterCompleted = catchAsync(async (req: Request & { user?: any }, res: Response) => {
-    console.log(req.user)
     const { email } = req.user;
     const chapterId = Number(req.params.chapterId)
 
@@ -29,7 +28,7 @@ const isChapterCompleted = catchAsync(async (req: Request & { user?: any }, res:
 })
 
 const isChapterOneCompleted = catchAsync(async (req: Request & { user?: any }, res: Response) => {
-    console.log(req.user)
+    (req.user)
     const { email } = req.user;
 
     const result = await UserService.isChapterOneCompleted({ email })

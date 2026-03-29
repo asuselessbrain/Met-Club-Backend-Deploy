@@ -85,7 +85,6 @@ const isChapterCompleted = async (payload: { email: string, chapterId: number })
         }
     })
 
-    console.log(chapterCompletion)
 
     return chapterCompletion?.isComplete || false;
 
@@ -110,7 +109,11 @@ const isChapterOneCompleted = async (payload: { email: string }) => {
         }
     })
 
-    return chapterCompletion?.isComplete || false;
+    if(chapterCompletion?.isComplete && chapterCompletion.quizLevel === QuizLevel.hard){
+        return true;
+    }
+
+    return false;
 }
 
 const updateChapterCompletion = async (payload: { email: string, chapterId: number }) => {
