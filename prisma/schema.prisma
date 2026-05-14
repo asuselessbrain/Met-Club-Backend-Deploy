@@ -43,6 +43,26 @@ model IsChapterComplete {
   @@id([userId, chapterId])
 }
 
+model LearningContent {
+  id           Int      @id @default(autoincrement())
+  chapterId    Int
+  subchapterId Int      @unique
+  sections     Json
+  createdAt    DateTime @default(now())
+  updatedAt    DateTime @updatedAt
+}
+
+model Tutorial {
+  id             Int      @id @default(autoincrement())
+  tutorialNumber Int      @unique
+  name           String
+  title          String
+  thumbnailImage String
+  videoLink      String
+  createdAt      DateTime @default(now())
+  updatedAt      DateTime @updatedAt
+}
+
 enum Role {
   student
   admin
