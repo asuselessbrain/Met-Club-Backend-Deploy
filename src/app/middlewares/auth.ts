@@ -45,7 +45,7 @@ const auth = (...roles: string[]) => {
       }
 
       if (roles.length && !roles.includes(user.role)) {
-        throw new AppError(403, "You are not authorized to access this route");
+        throw new AppError(403, "এই কাজটি সম্পাদনের জন্য আপনার অনুমতি নেই");
       }
 
       req.user = decoded as JwtPayload;

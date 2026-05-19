@@ -8,7 +8,11 @@ import sendResponse from "../../../utils/responser";
 const login = catchAsync(async (req: Request, res: Response) => {
     const { email, password } = req.body;
     const result = await AuthService.loginUser({ email, password });
-    res.cookie('token', result.accessToken, { secure: false, httpOnly: true })
+    res.cookie('refreshToken', result.refreshToken, {
+        secure: false,
+        httpOnly: true,
+        sameSite: 'lax'
+    })
     sendResponse(res, {
         statusCode: 200,
         message: "User logged in successfully!",
@@ -17,10 +21,20 @@ const login = catchAsync(async (req: Request, res: Response) => {
     })
 });
 
+const generateAccessTokenUsingRefreshToken = catchAsync(async (req: Request, res: Response) => {
+    const refreshToken = req.cookies.refreshToken;
+    const result = await AuthService.generateAccessTokenUsingRefreshToken(refreshToken);
+    sendResponse(res, {
+        statusCode: 200,
+        message: "Access token generated successfully!",
+        data: result,
+    })
+})
+
 const logout = catchAsync(async (req: Request, res: Response) => {
     const result = await AuthService.logout();
 
-    res.clearCookie("token", { secure: false, httpOnly: true });
+    res.clearCookie("refreshToken", { secure: false, httpOnly: true, sameSite: 'lax' });
 
     sendResponse(res, {
         statusCode: 200,
@@ -33,4 +47,5 @@ const logout = catchAsync(async (req: Request, res: Response) => {
 export const AuthController = {
     login,
     logout,
+    generateAccessTokenUsingRefreshToken
 };

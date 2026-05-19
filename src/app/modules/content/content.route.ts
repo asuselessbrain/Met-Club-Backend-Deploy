@@ -18,7 +18,7 @@ const upload = multer({ storage });
 
 // multipart: fields -> 'sections' (JSON), files -> 'images' (array)
 router.get("/", ContentController.getAllContents);
-router.post("/", upload.array("images"), ContentController.createOrUpdateContent);
+router.post("/", auth(Role.admin), upload.array("images"), ContentController.createOrUpdateContent);
 router.patch("/:subchapterId", upload.array("images"), ContentController.createOrUpdateContent);
 router.delete("/:subchapterId", ContentController.deleteContentBySubchapter);
 router.get("/subchapter/:subchapterId", ContentController.getContentBySubchapter);
