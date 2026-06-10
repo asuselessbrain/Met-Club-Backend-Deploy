@@ -33,6 +33,8 @@ const auth = (...roles: string[]) => {
         throw new AppError(401, "Unauthorized");
       }
 
+      console.log(decoded);
+
       const user = await prisma.user.findUnique({
         where: {
           email: decoded.email,

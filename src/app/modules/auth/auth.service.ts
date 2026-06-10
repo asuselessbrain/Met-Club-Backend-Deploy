@@ -16,13 +16,13 @@ const loginUser = async (payload: { email: string, password: string }) => {
     })
 
     if (!isUserExist) {
-        throw new AppError(404, "User not found!")
+        throw new AppError(404, "ব্যবহারকারী খুঁজে পাওয়া যায়নি!")
     }
 
     const isPasswordMarched = await bcrypt.compare(payload.password, isUserExist.password)
 
     if (!isPasswordMarched) {
-        throw new Error("Email or password does not matched!")
+        throw new AppError(401, "ইমেইল অথবা পাসওয়ারড সঠিক নয়!")
     }
 
     const accessToken = jwtGenerator({

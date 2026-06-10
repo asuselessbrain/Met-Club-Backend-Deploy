@@ -2,7 +2,6 @@ import express from "express";
 import auth from "../../middlewares/auth";
 import { Role } from "../../../../generated/prisma/enums";
 import { ContentController } from "./content.controller";
-// @ts-ignore: multer may not have types installed in this environment
 import multer from "multer";
 import path from "path";
 
@@ -19,8 +18,8 @@ const upload = multer({ storage });
 // multipart: fields -> 'sections' (JSON), files -> 'images' (array)
 router.get("/", ContentController.getAllContents);
 router.post("/", auth(Role.admin), upload.array("images"), ContentController.createOrUpdateContent);
-router.patch("/:subchapterId", upload.array("images"), ContentController.createOrUpdateContent);
-router.delete("/:subchapterId", ContentController.deleteContentBySubchapter);
-router.get("/subchapter/:subchapterId", ContentController.getContentBySubchapter);
+router.patch("/:subchapterId", auth(), upload.array("images"), ContentController.createOrUpdateContent);
+router.delete("/:subchapterId", auth(), ContentController.deleteContentBySubchapter);
+router.get("/subchapter/:subchapterId", auth(), ContentController.getContentBySubchapter);
 
 export const ContentRoutes = router;
