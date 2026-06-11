@@ -40,7 +40,11 @@ const loginUser = async (payload: { email: string, password: string }) => {
 
     return {
         accessToken,
-        refreshToken
+        refreshToken,
+        user: {
+            email: isUserExist.email,
+            role: isUserExist.role,
+        }
     }
 }
 
