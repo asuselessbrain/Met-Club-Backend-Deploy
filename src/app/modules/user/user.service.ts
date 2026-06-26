@@ -180,6 +180,18 @@ const quizLevelUpdate = async (payload: { email: string, chapterId: number, quiz
         throw new AppError(404, "User not found!")
     }
 
+    const chapterCompletion = await prisma.isChapterComplete.findFirst({
+        where: {
+            userId: user.id,
+            chapterId: payload.chapterId
+        },
+        select: {
+            isComplete: true,
+        }
+    })
+
+    console.log(chapterCompletion);
+
     const updatedQuizLevel = await prisma.isChapterComplete.updateMany({
         where: {
             userId: user.id,
