@@ -19,10 +19,9 @@ type MulterFile = {
 type MulReq = Request & { files?: MulterFile[] };
 
 const createOrUpdateContent = catchAsync(async (req: MulReq, res: Response) => {
-  // expected fields: chapterId, subchapterId, sections (JSON string)
-  const { chapterId, subchapterId, sections } = req.body as {
+  // expected fields: chapterId, sections (JSON string)
+  const { chapterId, sections } = req.body as {
     chapterId: string;
-    subchapterId: string;
     sections: string;
   };
 
@@ -47,7 +46,6 @@ const createOrUpdateContent = catchAsync(async (req: MulReq, res: Response) => {
 
   const payload = {
     chapterId: Number(chapterId),
-    subchapterId: Number(subchapterId),
     sections: mappedSections,
   };
 
@@ -70,9 +68,9 @@ const getAllContents = catchAsync(async (_req: Request, res: Response) => {
   });
 });
 
-const getContentBySubchapter = catchAsync(async (req: Request, res: Response) => {
-  const subchapterId = Number(req.params.subchapterId);
-  const result = await ContentService.getContentBySubchapter(subchapterId);
+const getContentByChapter = catchAsync(async (req: Request, res: Response) => {
+  const chapterId = Number(req.params.chapterId);
+  const result = await ContentService.getContentByChapter(chapterId);
 
   sendResponse(res, {
     statusCode: 200,
@@ -81,9 +79,9 @@ const getContentBySubchapter = catchAsync(async (req: Request, res: Response) =>
   });
 });
 
-const deleteContentBySubchapter = catchAsync(async (req: Request, res: Response) => {
-  const subchapterId = Number(req.params.subchapterId);
-  const result = await ContentService.deleteContentBySubchapter(subchapterId);
+const deleteContentByChapter = catchAsync(async (req: Request, res: Response) => {
+  const chapterId = Number(req.params.chapterId);
+  const result = await ContentService.deleteContentByChapter(chapterId);
 
   sendResponse(res, {
     statusCode: 200,
@@ -95,6 +93,6 @@ const deleteContentBySubchapter = catchAsync(async (req: Request, res: Response)
 export const ContentController = {
   createOrUpdateContent,
   getAllContents,
-  getContentBySubchapter,
-  deleteContentBySubchapter,
+  getContentByChapter,
+  deleteContentByChapter,
 };

@@ -78,6 +78,7 @@ const isChapterCompleted = async (payload: { email: string, chapterId: number })
         throw new AppError(404, "User not found!")
     }
 
+
     const chapterCompletion = await prisma.isChapterComplete.findFirst({
         where: {
             userId: user.id,
@@ -109,7 +110,7 @@ const isChapterOneCompleted = async (payload: { email: string }) => {
         }
     })
 
-    if(chapterCompletion?.isComplete && chapterCompletion.quizLevel === QuizLevel.hard){
+    if (chapterCompletion?.isComplete && chapterCompletion.quizLevel === QuizLevel.hard) {
         return true;
     }
 
@@ -129,15 +130,24 @@ const updateChapterCompletion = async (payload: { email: string, chapterId: numb
         throw new AppError(404, "User not found!")
     }
 
-    const updatedCompletion = await prisma.isChapterComplete.updateMany({
+
+    const updatedCompletion = await prisma.isChapterComplete.upsert({
         where: {
-            userId: user.id,
-            chapterId: payload.chapterId
+            userId_chapterId: {
+                userId: user.id,
+                chapterId: payload.chapterId
+            }
         },
-        data: {
+        update: {
+            isComplete: true
+        },
+        create: {
+            userId: user.id,
+            chapterId: payload.chapterId,
             isComplete: true
         }
     })
+
     return updatedCompletion;
 }
 
