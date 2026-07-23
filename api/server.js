@@ -390,12 +390,19 @@ var updateChapterCompletion = async (payload) => {
   if (!user) {
     throw new appErrors_default(404, "User not found!");
   }
-  const updatedCompletion = await prisma.isChapterComplete.updateMany({
+  const updatedCompletion = await prisma.isChapterComplete.upsert({
     where: {
-      userId: user.id,
-      chapterId: payload.chapterId
+      userId_chapterId: {
+        userId: user.id,
+        chapterId: payload.chapterId
+      }
     },
-    data: {
+    update: {
+      isComplete: true
+    },
+    create: {
+      userId: user.id,
+      chapterId: payload.chapterId,
       isComplete: true
     }
   });
@@ -1095,7 +1102,7 @@ var notFound_default = notFound;
 import path5 from "path";
 var app = express6();
 app.use(cors({
-  origin: ["http://localhost:5173", "http://119.15.153.74"],
+  origin: ["http://localhost:5173", "http://119.15.153.74", "http://meteorologyclub.com"],
   credentials: true
 }));
 app.use(express6.json());

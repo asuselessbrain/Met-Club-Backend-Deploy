@@ -9,7 +9,7 @@ import path from "path";
 const app = express();
 
 app.use(cors({
-    origin: ["http://localhost:5173", "http://119.15.153.74"],
+    origin: ["http://localhost:5173", "http://119.15.153.74", "http://meteorologyclub.com"],
     credentials: true,
 }));
 app.use(express.json())
