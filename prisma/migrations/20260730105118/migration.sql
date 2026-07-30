@@ -43,7 +43,7 @@ CREATE TABLE "ClubMember" (
 );
 
 -- CreateIndex
-CREATE UNIQUE INDEX "LearningContent_chapterId_key" ON "LearningContent"("chapterId");
+CREATE UNIQUE INDEX IF NOT EXISTS "LearningContent_chapterId_key" ON "LearningContent"("chapterId");
 
 -- AddForeignKey
 ALTER TABLE "ClubMember" ADD CONSTRAINT "ClubMember_schoolId_fkey" FOREIGN KEY ("schoolId") REFERENCES "School"("id") ON DELETE CASCADE ON UPDATE CASCADE;
