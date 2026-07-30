@@ -1102,7 +1102,7 @@ var notFound_default = notFound;
 import path5 from "path";
 var app = express6();
 app.use(cors({
-  origin: ["http://localhost:5173", "http://119.15.153.74", "http://meteorologyclub.com"],
+  origin: ["http://localhost:5173", "http://meteorologyclub.com", "http://meteorologyclub.com"],
   credentials: true
 }));
 app.use(express6.json());

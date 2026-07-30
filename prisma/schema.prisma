@@ -77,3 +77,31 @@ enum QuizLevel {
   medium
   hard
 }
+
+model School {
+  id          Int          @id @default(autoincrement())
+  locationKey String       
+  nameBn      String
+  nameEn      String
+  addressBn   String
+  addressEn   String
+  descBn      String
+  descEn      String
+  createdAt   DateTime     @default(now())
+  updatedAt   DateTime     @updatedAt
+  members     ClubMember[]
+}
+
+model ClubMember {
+  id        Int      @id @default(autoincrement())
+  schoolId  Int
+  school    School   @relation(fields: [schoolId], references: [id], onDelete: Cascade)
+  nameBn    String
+  nameEn    String
+  classBn   String
+  classEn   String
+  image     String?
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+}
+

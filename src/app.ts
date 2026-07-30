@@ -9,11 +9,11 @@ import path from "path";
 const app = express();
 
 app.use(cors({
-    origin: ["http://localhost:5173", "http://119.15.153.74", "http://meteorologyclub.com"],
+    origin: ["http://localhost:5173", "http://meteorologyclub.com", "http://meteorologyclub.com"],
     credentials: true,
 }));
 app.use(express.json())
-app.use(express.urlencoded({extended: true}))
+app.use(express.urlencoded({ extended: true }))
 app.use(cookieParser())
 
 app.use("/api/v1", router);
@@ -24,8 +24,8 @@ app.use(
     express.static(path.join(process.cwd(), "uploads"))
 );
 
-app.get("/", (req: Request, res: Response)=>{
-    res.send({"message": "Server is running!"})
+app.get("/", (req: Request, res: Response) => {
+    res.send({ "message": "Server is running!" })
 })
 
 app.use(globalErrorHandler)

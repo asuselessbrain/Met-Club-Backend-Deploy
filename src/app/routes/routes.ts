@@ -3,6 +3,7 @@ import { UserRoutes } from '../modules/user/user.route';
 import { AuthRoutes } from '../modules/auth/auth.route';
 import { ContentRoutes } from '../modules/content/content.route';
 import { TutorialRoutes } from '../modules/tutorial/tutorial.route';
+import { SchoolRoutes } from '../modules/school/school.route';
 const router = express.Router();
 
 const routes = [
@@ -21,6 +22,10 @@ const routes = [
     {
         path: "/tutorials",
         route: TutorialRoutes
+    },
+    {
+        path: "/schools",
+        route: SchoolRoutes
     }
 ]
 
