@@ -6,10 +6,10 @@
 
 */
 -- DropIndex
-DROP INDEX "LearningContent_subchapterId_key";
+DROP INDEX IF EXISTS "LearningContent_subchapterId_key";
 
 -- AlterTable
-ALTER TABLE "LearningContent" DROP COLUMN "subchapterId";
+ALTER TABLE "LearningContent" DROP COLUMN IF EXISTS "subchapterId";
 
 -- CreateTable
 CREATE TABLE "School" (
