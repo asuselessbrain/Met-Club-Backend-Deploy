@@ -12,7 +12,7 @@ DROP INDEX IF EXISTS "LearningContent_subchapterId_key";
 ALTER TABLE "LearningContent" DROP COLUMN IF EXISTS "subchapterId";
 
 -- CreateTable
-CREATE TABLE "School" (
+CREATE TABLE IF NOT EXISTS "School" (
     "id" SERIAL NOT NULL,
     "locationKey" TEXT NOT NULL,
     "nameBn" TEXT NOT NULL,
@@ -28,7 +28,7 @@ CREATE TABLE "School" (
 );
 
 -- CreateTable
-CREATE TABLE "ClubMember" (
+CREATE TABLE IF NOT EXISTS "ClubMember" (
     "id" SERIAL NOT NULL,
     "schoolId" INTEGER NOT NULL,
     "nameBn" TEXT NOT NULL,
@@ -46,4 +46,10 @@ CREATE TABLE "ClubMember" (
 CREATE UNIQUE INDEX IF NOT EXISTS "LearningContent_chapterId_key" ON "LearningContent"("chapterId");
 
 -- AddForeignKey
-ALTER TABLE "ClubMember" ADD CONSTRAINT "ClubMember_schoolId_fkey" FOREIGN KEY ("schoolId") REFERENCES "School"("id") ON DELETE CASCADE ON UPDATE CASCADE;
+DO $$
+BEGIN
+    IF NOT EXISTS (SELECT 1 FROM pg_constraint WHERE conname = 'ClubMember_schoolId_fkey') THEN
+        ALTER TABLE "ClubMember" ADD CONSTRAINT "ClubMember_schoolId_fkey" FOREIGN KEY ("schoolId") REFERENCES "School"("id") ON DELETE CASCADE ON UPDATE CASCADE;
+    END IF;
+END;
+$$;
