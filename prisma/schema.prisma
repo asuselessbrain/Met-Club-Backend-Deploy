@@ -83,6 +83,7 @@ model School {
   locationKey String       
   nameBn      String
   nameEn      String
+  videoLink   String?
   addressBn   String
   addressEn   String
   descBn      String
