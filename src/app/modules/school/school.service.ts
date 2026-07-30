@@ -64,6 +64,7 @@ const updateMember = async (id: number, payload: any) => {
 const deleteMember = async (id: number) => {
   return await prisma.clubMember.delete({
     where: { id },
+    // add
   });
 };
 
