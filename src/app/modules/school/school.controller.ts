@@ -3,8 +3,45 @@ import { SchoolService } from "./school.service";
 import { catchAsync } from "../../../utils/catchAsync";
 import sendResponse from "../../../utils/responser";
 
-const createSchool = catchAsync(async (req: Request, res: Response) => {
-  const result = await SchoolService.createSchool(req.body);
+// Minimal Multer file type to avoid depending on @types/multer in this environment
+type MulterFile = {
+  fieldname?: string;
+  originalname?: string;
+  encoding?: string;
+  mimetype?: string;
+  destination?: string;
+  filename: string;
+  path?: string;
+  size?: number;
+  buffer?: Buffer;
+};
+
+type MulReq = Request & { files?: MulterFile[], file?: MulterFile };
+
+const createSchool = catchAsync(async (req: MulReq, res: Response) => {
+  let payload = req.body;
+  if (req.body.data) {
+    try {
+      payload = JSON.parse(req.body.data);
+    } catch (err) {
+      payload = req.body;
+    }
+  }
+
+  const files = req.files || [];
+  if (payload.members && Array.isArray(payload.members)) {
+    payload.members = payload.members.map((member: any) => {
+      const imgIdx = typeof member.imageIndex === "number" ? member.imageIndex : null;
+      const file = imgIdx !== null ? files[imgIdx] : undefined;
+      if (file) {
+        member.image = `/uploads/${file.filename}`;
+      }
+      delete member.imageIndex;
+      return member;
+    });
+  }
+
+  const result = await SchoolService.createSchool(payload);
   sendResponse(res, {
     statusCode: 201,
     message: "School created successfully",
@@ -32,9 +69,32 @@ const getSchoolById = catchAsync(async (req: Request, res: Response) => {
   });
 });
 
-const updateSchool = catchAsync(async (req: Request, res: Response) => {
+const updateSchool = catchAsync(async (req: MulReq, res: Response) => {
   const id = Number(req.params.id);
-  const result = await SchoolService.updateSchool(id, req.body);
+  
+  let payload = req.body;
+  if (req.body.data) {
+    try {
+      payload = JSON.parse(req.body.data);
+    } catch (err) {
+      payload = req.body;
+    }
+  }
+
+  const files = req.files || [];
+  if (payload.members && Array.isArray(payload.members)) {
+    payload.members = payload.members.map((member: any) => {
+      const imgIdx = typeof member.imageIndex === "number" ? member.imageIndex : null;
+      const file = imgIdx !== null ? files[imgIdx] : undefined;
+      if (file) {
+        member.image = `/uploads/${file.filename}`;
+      }
+      delete member.imageIndex;
+      return member;
+    });
+  }
+
+  const result = await SchoolService.updateSchool(id, payload);
   sendResponse(res, {
     statusCode: 200,
     message: "School updated successfully",
@@ -52,8 +112,15 @@ const deleteSchool = catchAsync(async (req: Request, res: Response) => {
   });
 });
 
-const createMember = catchAsync(async (req: Request, res: Response) => {
-  const result = await SchoolService.createMember(req.body);
+const createMember = catchAsync(async (req: MulReq, res: Response) => {
+  let payload = req.body;
+  if (req.body.data) {
+    try { payload = JSON.parse(req.body.data); } catch (e) { payload = req.body; }
+  }
+  if (req.file) {
+    payload.image = `/uploads/${req.file.filename}`;
+  }
+  const result = await SchoolService.createMember(payload);
   sendResponse(res, {
     statusCode: 201,
     message: "Member created successfully",
@@ -61,9 +128,16 @@ const createMember = catchAsync(async (req: Request, res: Response) => {
   });
 });
 
-const updateMember = catchAsync(async (req: Request, res: Response) => {
+const updateMember = catchAsync(async (req: MulReq, res: Response) => {
   const id = Number(req.params.id);
-  const result = await SchoolService.updateMember(id, req.body);
+  let payload = req.body;
+  if (req.body.data) {
+    try { payload = JSON.parse(req.body.data); } catch (e) { payload = req.body; }
+  }
+  if (req.file) {
+    payload.image = `/uploads/${req.file.filename}`;
+  }
+  const result = await SchoolService.updateMember(id, payload);
   sendResponse(res, {
     statusCode: 200,
     message: "Member updated successfully",
