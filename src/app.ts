@@ -9,7 +9,7 @@ import path from "path";
 const app = express();
 
 app.use(cors({
-    origin: ["http://localhost:5173", "http://meteorologyclub.com", "http://www.meteorologyclub.com"],
+    origin: ["http://localhost:5173", "https://meteorologyclub.com", "https://www.meteorologyclub.com"],
     credentials: true,
 }));
 app.use(express.json())
